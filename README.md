@@ -55,3 +55,6 @@ Reproduced by `python -m abkit.simulate` (seed 42):
 ## License
 
 MIT
+
+## Results
+See [RESULTS.md](RESULTS.md).
