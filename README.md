@@ -39,6 +39,12 @@ Reproduced by `python -m abkit.simulate` (seed 42):
 - Planning for a 10% to 12% lift at alpha 0.05 and 80% power needs 3,841 users per group, and 5,000 simulated experiments at that size reached significance 79.5% of the time, matching the 80% target.
 - In A/A tests with no real difference, the false-positive rate of "stop at the first significant result" was 5.0% with one look, 8.2% with two, 14.0% with five, 19.1% with ten and 25.1% with twenty. Peeking at results and stopping early is the most common way teams ship changes that do nothing.
 
+## Figures
+
+![Peeking inflates false positives](docs/images/peeking_false_positive_rate.png)
+
+![Sample size versus effect size](docs/images/sample_size_vs_effect.png)
+
 ## Method notes and limitations
 
 - The test assumes a binary metric (converted or not), independent users and a fixed sample size decided in advance.

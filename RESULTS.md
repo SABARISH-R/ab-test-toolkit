@@ -31,3 +31,10 @@ Interpretation: at the planned sample size, simulated experiments with a true li
 ## Not done yet
 - Analysis of a real public experiment dataset and a written decision memo
 - Continuous-metric tests and variance reduction
+
+## Figures
+Regenerate with `PYTHONPATH=src python scripts/make_figures.py` (needs matplotlib).
+
+![Peeking inflates false positives](docs/images/peeking_false_positive_rate.png)
+
+![Sample size versus effect size](docs/images/sample_size_vs_effect.png)
