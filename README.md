@@ -34,6 +34,10 @@ PYTHONPATH=src python -m abkit.cli data/experiment.csv \
     --group-col variant --metric-col converted --control A --treatment B
 ```
 
+## Real result: Cookie Cats
+
+On a public dataset of 90,189 mobile-game players, moving the first gate from level 30 to level 40 **lowered day-7 retention by 0.82 points** (95% CI −0.31 to −1.33, p = 0.0016). Decision: do not ship. See the [decision memo](reports/cookie_cats/DECISION_MEMO.md).
+
 ## What the simulations show
 
 Reproduced by `python -m abkit.simulate` (seed 42):
@@ -56,7 +60,7 @@ Reproduced by `python -m abkit.simulate` (seed 42):
 ## Roadmap
 
 - [x] Sample size, z-test with CI, SRM check, multiple-comparison helper, simulations, tests
-- [ ] Analyse a real public experiment dataset and write the decision memo
+- [x] Analyse a real public experiment dataset and write the decision memo ([Cookie Cats](reports/cookie_cats/DECISION_MEMO.md))
 - [ ] Add continuous-metric support (Welch t-test) and CUPED
 - [ ] Add a sequential testing option so teams can monitor safely
 

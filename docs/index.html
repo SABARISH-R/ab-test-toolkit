@@ -37,7 +37,15 @@ footer{margin-top:64px;color:var(--mut);font-size:13px}
 <h1>A/B Test Toolkit: how to make a ship decision you can defend</h1>
 <p class="lede">Most bad launches aren't caused by bad ideas. They're caused by experiments that were too small, broken, or stopped the moment they looked good. This toolkit encodes the discipline a product team needs: size first, validate, measure with uncertainty, then decide.</p>
 <div class="links"><a class="p" href="https://github.com/SABARISH-R/ab-test-toolkit">View code</a><a href="DECISION_MEMO_TEMPLATE.md">Decision memo template</a><a href="METHODOLOGY.md">Methodology</a></div>
-<div class="stats"><div class="stat"><b>3,841</b><span>users per group to detect 10%→12% at 80% power</span></div><div class="stat"><b>79.5%</b><span>simulated power vs. 80% target (5,000 runs)</span></div><div class="stat"><b>5% → 25%</b><span>false-positive rate with 1 vs. 20 peeks</span></div><div class="stat"><b>9 / 9</b><span>unit tests passing</span></div></div>
+<div class="stats"><div class="stat"><b>90,189</b><span>real players analysed (Cookie Cats)</span></div><div class="stat"><b>−0.82 pts</b><span>day-7 retention change: do not ship</span></div><div class="stat"><b>79.5%</b><span>simulated power vs. 80% target</span></div><div class="stat"><b>5% → 25%</b><span>false positives with 1 vs. 20 peeks</span></div></div>
+
+<h2>Real experiment: Cookie Cats (90,189 players)</h2>
+<p>A mobile game tested moving its first progress gate from level 30 to level 40. I ran the toolkit on the public dataset and wrote the decision memo.</p>
+<table><tr><th>Group</th><th>Players</th><th>Day-1 retention</th><th>Day-7 retention</th></tr>
+<tr><td>Gate 30 (control)</td><td>44,700</td><td>44.82%</td><td>19.02%</td></tr><tr><td>Gate 40</td><td>45,489</td><td>44.23%</td><td>18.20%</td></tr></table>
+<div class="out bad" style="margin-top:12px"><b>Decision: do not ship.</b> Day-7 retention is 0.82 points lower (95% CI −1.33 to −0.31, p = 0.0016). The bootstrap agrees in 2,000 of 2,000 resamples. The memo also flags the sample-ratio check (p = 0.009), a 49,854-round outlier and the missing revenue data.</div>
+<img style="margin-top:12px" src="https://raw.githubusercontent.com/SABARISH-R/ab-test-toolkit/main/reports/cookie_cats/bootstrap_retention_diff.png" alt="Bootstrap distribution of retention difference">
+<p><a href="https://github.com/SABARISH-R/ab-test-toolkit/blob/main/reports/cookie_cats/DECISION_MEMO.md">Read the full decision memo →</a></p>
 
 <h2>The product problem</h2>
 <div class="grid"><div class="card"><h3>Who has it</h3><p>PMs and analysts who run conversion experiments but don't own a stats platform.</p></div><div class="card"><h3>What goes wrong</h3><p>Under-powered tests, broken randomisation, and 'peeking' until p &lt; 0.05 lead teams to ship changes that do nothing.</p></div><div class="card"><h3>What I built</h3><p>A small, readable library + simulations that prove each failure mode, + a one-page decision memo.</p></div><div class="card"><h3>How I'd measure success</h3><p>Share of experiments with a pre-registered sample size; share of launches that hold their lift after 30 days.</p></div></div>
