@@ -1,5 +1,7 @@
 # A/B Test Toolkit: plan, validate, analyse, decide
 
+> **Interactive case study:** https://sabarish-r.github.io/ab-test-toolkit/ (served from `docs/index.html`; enable GitHub Pages → main → /docs)
+
 Small, readable helpers and a worked notebook for running conversion-rate experiments the way a product team should: decide the sample size first, check the experiment is valid, report an effect with a confidence interval, and write a decision you can defend.
 
 The statistics core uses only the Python standard library. Simulations use NumPy.

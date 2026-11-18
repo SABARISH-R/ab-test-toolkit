@@ -1,0 +1,99 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>A/B Test Toolkit — case study</title><style>
+:root{--bg:#fafaf7;--ink:#1d1d1f;--mut:#5f6368;--line:#e3e3de;--acc:#1a73e8;--warn:#b3261e;--card:#fff;--ok:#188038}
+*{box-sizing:border-box}body{margin:0;font:16px/1.6 system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--ink)}
+main{max-width:920px;margin:0 auto;padding:48px 24px 80px}
+.kicker{font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--acc);font-weight:600}
+h1{font-size:38px;line-height:1.15;margin:8px 0 12px;letter-spacing:-.02em}
+h2{font-size:22px;margin:48px 0 12px;padding-top:24px;border-top:1px solid var(--line)}
+.lede{font-size:19px;color:var(--mut);max-width:720px}
+.links a{display:inline-block;margin:16px 12px 0 0;padding:8px 14px;border:1px solid var(--ink);border-radius:999px;color:var(--ink);text-decoration:none;font-size:14px}
+.links a.p{background:var(--ink);color:#fff}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:28px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px}
+.stat b{display:block;font-size:28px;letter-spacing:-.02em}.stat span{font-size:13px;color:var(--mut)}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.card h3{margin:0 0 6px;font-size:15px}.card p{margin:0;color:var(--mut);font-size:15px}
+.demo{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:20px}
+label{font-size:14px;color:var(--mut);display:block;margin:10px 0 4px}
+input,select{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:8px;width:100%;background:#fff}
+input[type=range]{padding:0}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.out{margin-top:16px;padding:14px 16px;border-radius:8px;background:#f1f3f4;font-size:15px}
+.out.good{background:#e6f4ea}.out.bad{background:#fce8e6}
+button{font:inherit;padding:8px 14px;border-radius:8px;border:1px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer}
+button.ghost{background:#fff;color:var(--ink)}
+.chips button{margin:4px 6px 4px 0;font-size:13px;padding:5px 10px}
+.banner{background:#fef7e0;border:1px solid #f9e1a0;border-radius:8px;padding:10px 14px;font-size:14px;margin:12px 0}
+img{max-width:100%;border:1px solid var(--line);border-radius:8px;background:#fff}
+table{border-collapse:collapse;width:100%;font-size:14px}td,th{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}
+.bar{height:14px;border-radius:3px}
+.src{font-size:13px;color:var(--mut)}
+ol li,ul li{margin:4px 0}
+footer{margin-top:64px;color:var(--mut);font-size:13px}
+</style></head><body><main>
+<div class="kicker">Experimentation · Product analytics</div>
+<h1>A/B Test Toolkit: how to make a ship decision you can defend</h1>
+<p class="lede">Most bad launches aren't caused by bad ideas. They're caused by experiments that were too small, broken, or stopped the moment they looked good. This toolkit encodes the discipline a product team needs: size first, validate, measure with uncertainty, then decide.</p>
+<div class="links"><a class="p" href="https://github.com/SABARISH-R/ab-test-toolkit">View code</a><a href="DECISION_MEMO_TEMPLATE.md">Decision memo template</a><a href="METHODOLOGY.md">Methodology</a></div>
+<div class="stats"><div class="stat"><b>3,841</b><span>users per group to detect 10%→12% at 80% power</span></div><div class="stat"><b>79.5%</b><span>simulated power vs. 80% target (5,000 runs)</span></div><div class="stat"><b>5% → 25%</b><span>false-positive rate with 1 vs. 20 peeks</span></div><div class="stat"><b>9 / 9</b><span>unit tests passing</span></div></div>
+
+<h2>The product problem</h2>
+<div class="grid"><div class="card"><h3>Who has it</h3><p>PMs and analysts who run conversion experiments but don't own a stats platform.</p></div><div class="card"><h3>What goes wrong</h3><p>Under-powered tests, broken randomisation, and 'peeking' until p &lt; 0.05 lead teams to ship changes that do nothing.</p></div><div class="card"><h3>What I built</h3><p>A small, readable library + simulations that prove each failure mode, + a one-page decision memo.</p></div><div class="card"><h3>How I'd measure success</h3><p>Share of experiments with a pre-registered sample size; share of launches that hold their lift after 30 days.</p></div></div>
+
+<h2>Try it: plan an experiment</h2>
+<div class="demo">
+<div class="row">
+<div><label>Baseline conversion: <b id="bv"></b></label><input type="range" id="base" min="1" max="50" step="0.5" value="10"></div>
+<div><label>Minimum detectable lift (absolute pts): <b id="mv"></b></label><input type="range" id="mde" min="0.2" max="10" step="0.1" value="2"></div>
+<div><label>Daily users entering the test</label><input type="number" id="traffic" value="2000"></div>
+</div>
+<div class="out" id="planOut"></div>
+<p class="src">Same formula as <code>abkit.sample_size_per_group</code> (α = 0.05 two-sided, power = 0.80).</p>
+</div>
+
+<h2>Try it: read a result</h2>
+<div class="demo">
+<div class="row">
+<div><label>Control users</label><input type="number" id="nA" value="4000"></div>
+<div><label>Control conversions</label><input type="number" id="cA" value="400"></div>
+<div><label>Treatment users</label><input type="number" id="nB" value="4000"></div>
+<div><label>Treatment conversions</label><input type="number" id="cB" value="470"></div>
+</div>
+<div class="out" id="testOut"></div>
+<p class="src">Two-proportion z-test with a 95% CI on the lift, plus a sample-ratio-mismatch check (assumes a 50/50 split), as in <code>abkit.two_proportion_test</code> and <code>abkit.srm_check</code>.</p>
+</div>
+
+<h2>What the simulations prove</h2>
+<p>In A/A tests where nothing changed, checking results repeatedly and stopping at the first "significant" look inflates false positives five-fold. This is the single most useful chart to show a team before they start peeking.</p>
+<img src="images/peeking_false_positive_rate.png" alt="False positive rate rises with number of peeks">
+<p>The smaller the lift you want to detect, the faster the sample size grows. Picking the MDE is a product decision, not a stats one: it's the smallest change worth shipping.</p>
+<img src="images/sample_size_vs_effect.png" alt="Sample size vs effect size">
+
+<h2>Decisions and trade-offs</h2>
+<ul>
+<li><b>Fixed-horizon test over sequential</b> for v1: simplest to explain to stakeholders; sequential testing is on the roadmap for teams that must monitor.</li>
+<li><b>Standard library for the statistics core</b>: anyone can audit the maths in one file.</li>
+<li><b>Simulated data in the notebook</b>: the true effect is known, so the method can be checked. It's a teaching example, not a product finding.</li>
+</ul>
+<h2>Next</h2>
+<ol><li>Analyse a real public experiment dataset and write the decision memo.</li><li>Continuous metrics (Welch t-test) and CUPED variance reduction.</li><li>Sequential testing so teams can monitor safely.</li></ol>
+
+<footer>Built by Sabarish R · Everything on this page is reproducible from the repository · <a href="https://github.com/SABARISH-R/ab-test-toolkit/blob/main/RESULTS.md">RESULTS.md</a></footer></main>
+<script>
+function invN(p){const a=[-39.6968302866538,220.946098424521,-275.928510446969,138.357751867269,-30.6647980661472,2.50662827745924],b=[-54.4760987982241,161.585836858041,-155.698979859887,66.8013118877197,-13.2806815528857],c=[-.00778489400243029,-.322396458041136,-2.40075827716184,-2.54973253934373,4.37466414146497,2.93816398269878],d=[.00778469570904146,.32246712907004,2.445134137143,3.75440866190742];const pl=.02425;let q,r;if(p<pl){q=Math.sqrt(-2*Math.log(p));return(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1)}if(p>1-pl){q=Math.sqrt(-2*Math.log(1-p));return-(((((c[0]*q+c[1])*q+c[2])*q+c[3])*q+c[4])*q+c[5])/((((d[0]*q+d[1])*q+d[2])*q+d[3])*q+1)}q=p-.5;r=q*q;return(((((a[0]*r+a[1])*r+a[2])*r+a[3])*r+a[4])*r+a[5])*q/(((((b[0]*r+b[1])*r+b[2])*r+b[3])*r+b[4])*r+1)}
+function cdf(x){const t=1/(1+.2316419*Math.abs(x)),d=.3989423*Math.exp(-x*x/2),p=d*t*(.3193815+t*(-.3565638+t*(1.781478+t*(-1.821256+t*1.330274))));return x>0?1-p:p}
+const $=id=>document.getElementById(id),fmt=n=>n.toLocaleString();
+function plan(){const p1=$('base').value/100,m=$('mde').value/100,p2=p1+m;$('bv').textContent=(p1*100).toFixed(1)+'%';$('mv').textContent='+'+(m*100).toFixed(1)+' pts ('+(m/p1*100).toFixed(0)+'% relative)';
+if(p2>=1){$('planOut').textContent='Baseline + lift must be below 100%.';return}
+const za=invN(.975),zb=invN(.8),pb=(p1+p2)/2,n=Math.ceil((za*Math.sqrt(2*pb*(1-pb))+zb*Math.sqrt(p1*(1-p1)+p2*(1-p2)))**2/m**2),days=Math.ceil(2*n/Math.max(1,+$('traffic').value));
+$('planOut').innerHTML=`You need <b>${fmt(n)}</b> users per group (${fmt(2*n)} total). At your traffic that's <b>${days} day${days>1?'s':''}</b>`+(days<7?' — run at least a full week to cover weekday/weekend behaviour.':'.')+(days>42?' <br>That is long: consider a bigger MDE or a higher-traffic surface.':'')}
+function test(){const nA=+$('nA').value,cA=+$('cA').value,nB=+$('nB').value,cB=+$('cB').value,o=$('testOut');if(!(nA>0&&nB>0)||cA>nA||cB>nB){o.textContent='Check the inputs.';return}
+const pA=cA/nA,pB=cB/nB,pp=(cA+cB)/(nA+nB),se0=Math.sqrt(pp*(1-pp)*(1/nA+1/nB)),z=(pB-pA)/se0,p=2*(1-cdf(Math.abs(z))),se=Math.sqrt(pA*(1-pA)/nA+pB*(1-pB)/nB),lo=(pB-pA-1.96*se)*100,hi=(pB-pA+1.96*se)*100;
+const N=nA+nB,chi=((nA-N/2)**2+(nB-N/2)**2)/(N/2),srmP=2*(1-cdf(Math.sqrt(chi))),srm=srmP<.001;
+let v,cls;if(srm){v='⚠️ Sample ratio mismatch (p = '+srmP.toExponential(1)+'). Assignment looks broken — don\'t trust this result; debug the split first.';cls='bad'}
+else if(p<.05&&lo>0){v='✅ Significant positive lift. Ship if guardrail metrics are healthy.';cls='good'}else if(p<.05){v='🛑 Significant negative effect. Do not ship.';cls='bad'}else{v='➖ Not significant. The data can\'t rule out zero; don\'t claim a win.';cls=''}
+o.className='out '+cls;o.innerHTML=`Control ${(pA*100).toFixed(2)}% → Treatment ${(pB*100).toFixed(2)}% · lift <b>${((pB-pA)*100).toFixed(2)} pts</b> (${pA?((pB/pA-1)*100).toFixed(1):'–'}% relative)<br>95% CI [${lo.toFixed(2)}, ${hi.toFixed(2)}] pts · p = ${p.toFixed(4)}<br><br>${v}`}
+['base','mde','traffic'].forEach(i=>$(i).oninput=plan);['nA','cA','nB','cB'].forEach(i=>$(i).oninput=test);plan();test();
+</script></body></html>
